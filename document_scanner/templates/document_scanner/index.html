@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Document Scanner — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">DOCUMENT SCANNER</p><h1>Bring in a document</h1><p>Upload a photo, PDF, Word document, or text file. Straightens, cleans, and extracts the information you need.</p></section>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert">{% for message in messages %}<p style="margin:0;">{{ message }}</p>{% endfor %}</div>
+  {% endif %}
+{% endwith %}
+
+<div class="scanner-layout">
+  <form class="panel form" action="{{ url_for('document_scanner.scan') }}" method="post" enctype="multipart/form-data" id="scan-form">
+    <div>
+      <label class="scanner-legend" for="file-input" style="display:block;margin-bottom:8px;">Document</label>
+      <label class="upload-drop" for="file-input" id="upload-drop">
+        <span class="upload-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
+        </span>
+        <strong id="upload-drop-title">Drop your document here</strong>
+        <span id="upload-drop-sub">or <u>browse from your device</u></span>
+        <input type="file" id="file-input" name="image" accept=".png,.jpg,.jpeg,.bmp,.webp,.pdf,.docx,.txt" required hidden>
+      </label>
+      <small style="display:block;margin-top:8px;color:var(--muted);font-weight:400;">PNG, JPG, JPEG, BMP, WEBP, PDF, DOCX, TXT — up to 16MB</small>
+    </div>
+
+    <div class="scanner-fieldset">
+      <div class="scanner-legend">Output style</div>
+      <label class="scanner-radio"><input type="radio" name="mode" value="scanner" checked><span class="scanner-radio-text"><strong>Black &amp; white</strong><small>Classic scanner finish</small></span></label>
+      <label class="scanner-radio"><input type="radio" name="mode" value="color"><span class="scanner-radio-text"><strong>Enhanced color</strong><small>Keep natural tones</small></span></label>
+    </div>
+
+    <div class="scanner-fieldset">
+      <div class="scanner-legend">Extraction mode</div>
+      <label class="scanner-radio"><input type="radio" name="extraction_mode" value="summary" checked><span class="scanner-radio-text"><strong>Smart summary</strong><small>Key points, quickly</small></span></label>
+      <label class="scanner-radio"><input type="radio" name="extraction_mode" value="full"><span class="scanner-radio-text"><strong>Full text</strong><small>Every word, every page</small></span></label>
+    </div>
+
+    <button type="submit" class="button">Scan document <span aria-hidden="true">→</span></button>
+  </form>
+
+  <aside class="panel scanner-steps">
+    <div class="scanner-steps-badge">3 steps</div>
+    <h2 style="margin-top:0;">How it works</h2>
+    <ol class="scanner-steps-list">
+      <li><strong>Upload</strong><p>Choose any supported file above.</p></li>
+      <li><strong>Enhance</strong><p>Edges, shadows, and perspective are refined.</p></li>
+      <li><strong>Extract</strong><p>Receive a clean scan and copyable text.</p></li>
+    </ol>
+  </aside>
+</div>
+
+<script>
+(function () {
+  var input = document.getElementById('file-input');
+  var drop = document.getElementById('upload-drop');
+  var title = document.getElementById('upload-drop-title');
+  var sub = document.getElementById('upload-drop-sub');
+  function showFile(file) {
+    if (!file) return;
+    title.textContent = file.name;
+    sub.textContent = 'Ready to scan — click to change';
+    drop.classList.add('has-file');
+  }
+  input.addEventListener('change', function () { showFile(input.files[0]); });
+  ['dragover', 'dragleave', 'drop'].forEach(function (evt) {
+    drop.addEventListener(evt, function (e) { e.preventDefault(); e.stopPropagation();
+      if (evt === 'dragover') drop.classList.add('dragover');
+      if (evt === 'dragleave') drop.classList.remove('dragover');
+    });
+  });
+  drop.addEventListener('drop', function (e) {
+    drop.classList.remove('dragover');
+    var files = e.dataTransfer.files;
+    if (files && files.length) { input.files = files; showFile(files[0]); }
+  });
+})();
+</script>
+{% endblock %}
