@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Face & Eye Detection — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">VIDEO DETECTION</p><h1>Face &amp; Eye Detection</h1><p>Upload a video to detect faces with the DNN model and eyes inside each face using Haar cascades.</p></section>
+<section class="panel form"><label>Video file<input id="video" type="file" accept="video/*"></label><div class="actions"><button class="button" id="run">Upload &amp; run detection</button><button class="button danger" id="stop" hidden>Stop</button></div><p id="status" class="status"></p></section>
+<section id="streamPanel" class="panel result" hidden><img id="stream" alt="Live face and eye detection stream"><div class="legend"><span><i class="face"></i> Face</span><span><i class="eye"></i> Eyes</span></div></section>
+<script>
+const input=document.querySelector('#video'), run=document.querySelector('#run'), stop=document.querySelector('#stop'), status=document.querySelector('#status'), panel=document.querySelector('#streamPanel'), stream=document.querySelector('#stream');
+run.onclick=async()=>{if(!input.files[0]){status.textContent='Choose a video first.';return;} run.disabled=true; status.textContent='Uploading...'; const fd=new FormData();fd.append('video',input.files[0]); try{const r=await fetch('/upload-video',{method:'POST',body:fd}),d=await r.json();if(!r.ok)throw Error(d.error);stream.src='/video-feed/'+encodeURIComponent(d.filename)+'?t='+Date.now();panel.hidden=false;stop.hidden=false;status.textContent='Detection is running.';}catch(e){status.textContent=e.message;run.disabled=false;}};
+stop.onclick=()=>{stream.src='';panel.hidden=true;stop.hidden=true;run.disabled=false;status.textContent='Stopped.';};
+</script>
+{% endblock %}

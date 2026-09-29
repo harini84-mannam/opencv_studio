@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}OpenCV Studio{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <button class="sidebar-toggle" aria-label="Open navigation" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="brand-mark">CV</span><span><strong>OpenCV</strong><small>Studio</small></span></div>
+    <div class="sidebar-section">WORKSPACE</div>
+    <nav class="side-nav">
+      <a href="{{ url_for('index') }}"><span class="nav-icon">⌂</span>Dashboard</a>
+      <a href="{{ url_for('face_eye') }}"><span class="nav-icon">◉</span>Face &amp; Eye Detection</a>
+      <a href="{{ url_for('document_scanner.index') }}"><span class="nav-icon">▤</span>Document Scanner</a>
+    </nav>
+    <div class="sidebar-section">IMAGE PROCESSING</div>
+    <nav class="side-nav tools-nav">
+      {% for slug, label, description in tools %}<a href="{{ url_for('tool', operation=slug) }}"><span class="nav-icon">✦</span>{{ label }}</a>{% endfor %}
+    </nav>
+    <div class="sidebar-bottom"><div class="status-dot"></div><div><strong>OpenCV workspace</strong><small>Ready for processing</small></div></div>
+  </aside>
+  <div class="sidebar-overlay" onclick="document.body.classList.remove('sidebar-open')"></div>
+  <div class="app-shell">
+    <header class="pagebar"><div class="breadcrumb">OpenCV Studio <span>/</span> <b>{% block section %}Workspace{% endblock %}</b></div></header>
+    <main class="container">{% block content %}{% endblock %}</main>
+    <footer class="footer"><span>OpenCV Studio</span><span>Computer vision tools for practical image processing</span></footer>
+  </div>
+  <script>document.querySelectorAll('.side-nav a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('sidebar-open')));</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Splitting & Combining — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">IMAGE PROCESSING</p><h1>Splitting &amp; Combining</h1><p>Split an image into left/right halves or four quadrants, combine two images horizontally or vertically, and recombine four quadrants.</p></section>
+<form class="panel form" method="post" enctype="multipart/form-data">
+  <label>Operation<select name="mode" id="splitMode"><option value="left-right">Split left and right halves</option><option value="quadrants">Split into four quadrants</option><option value="horizontal">Combine two images horizontally</option><option value="vertical">Combine two images vertically</option><option value="recombine">Recombine four quadrant images</option></select></label>
+  <label>Source image<input type="file" name="image" accept="image/*" required></label>
+  <label class="second-input">Second image<input type="file" name="second_image" accept="image/*"></label>
+  <div class="quadrant-inputs"><label>Top-left<input type="file" name="top_left" accept="image/*"></label><label>Top-right<input type="file" name="top_right" accept="image/*"></label><label>Bottom-left<input type="file" name="bottom_left" accept="image/*"></label><label>Bottom-right<input type="file" name="bottom_right" accept="image/*"></label></div>
+  <button class="button" type="submit">Run operation</button>
+</form>
+{% if error %}
+<div class="alert">{{ error }}</div>
+{% endif %}
+{% if outputs %}
+<section class="split-grid">
+  {% for key, filename in outputs.items() %}<div class="panel result"><h2>{{ key|replace('_', ' ')|title }}</h2><img src="{{ url_for('output_file', filename=filename) }}" alt="{{ key }}"><a class="button secondary" download href="{{ url_for('output_file', filename=filename) }}">Download</a></div>{% endfor %}
+</section>
+{% endif %}
+<script>
+const mode=document.getElementById('splitMode'), second=document.querySelector('.second-input'), quadrants=document.querySelector('.quadrant-inputs'), source=document.querySelector('input[name=image]');
+function updateFields(){const value=mode.value;second.style.display=value==='horizontal'||value==='vertical'?'grid':'none';quadrants.style.display=value==='recombine'?'grid':'none';source.closest('label').style.display=value==='recombine'?'none':'grid';source.required=value!=='recombine';document.querySelectorAll('.quadrant-inputs input').forEach(input=>input.required=value==='recombine');document.querySelector('input[name=second_image]').required=value==='horizontal'||value==='vertical';}
+mode.addEventListener('change',updateFields);updateFields();
+</script>
+{% endblock %}

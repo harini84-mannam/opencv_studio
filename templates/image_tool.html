@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ operation|replace('-', ' ')|title }} — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">IMAGE PROCESSING</p><h1>{{ operation|replace('-', ' ')|title }}</h1><p>Upload an image, choose the settings, and download the processed result.</p></section>
+<form class="panel form" method="post" enctype="multipart/form-data">
+  <label>Source image<input type="file" name="image" accept="image/*" required></label>
+  {% if operation == 'blur' %}<label>Method<select name="method"><option value="gaussian">Gaussian</option><option value="median">Median</option><option value="bilateral">Bilateral</option></select></label>{% endif %}
+  {% if operation == 'edges' %}<label>Method<select name="method"><option value="canny">Canny</option><option value="sobel">Sobel gradient</option></select></label>{% endif %}
+  {% if operation == 'brightness' %}<label>Contrast<input type="number" name="contrast" value="1.2" step="0.1" min="0.1" max="4"></label><label>Brightness<input type="number" name="brightness" value="25" min="-255" max="255"></label>{% endif %}
+  {% if operation == 'color-filter' %}<label>Color<select name="color"><option>green</option><option>red</option><option>blue</option><option>yellow</option></select></label>{% endif %}
+  {% if operation == 'threshold' %}<label>Method<select name="method"><option value="otsu">Otsu</option><option value="binary">Binary</option><option value="adaptive">Adaptive</option></select></label>{% endif %}
+  {% if operation == 'morphology' %}<label>Operation<select name="method"><option value="opening">Opening</option><option value="closing">Closing</option><option value="erosion">Erosion</option><option value="dilation">Dilation</option></select></label>{% endif %}
+  {% if operation == 'shapes-text' %}<label>Shape<select name="shape"><option value="all">All shapes</option><option value="rectangle">Rectangle</option><option value="circle">Circle</option><option value="line">Line</option><option value="arrow">Arrow</option></select></label><label>Text to add<input type="text" name="text" value="My Text" maxlength="80"></label><label>Add text?<select name="add_text"><option value="yes">Yes</option><option value="no">No</option></select></label><label>Color<select name="color"><option value="blue">Blue</option><option value="green">Green</option><option value="red">Red</option><option value="yellow">Yellow</option><option value="white">White</option></select></label><label>Line thickness<input type="number" name="thickness" value="4" min="1" max="20"></label><label>Text size<input type="number" name="font_scale" value="1.2" min="0.4" max="3" step="0.1"></label>{% endif %}
+  <button class="button" type="submit">Process image</button>
+</form>
+{% if error %}<div class="alert">{{ error }}</div>{% endif %}
+{% if result %}<section class="result panel"><h2>Result</h2><img src="{{ url_for('output_file', filename=result) }}" alt="Processed result"><a class="button secondary" download href="{{ url_for('output_file', filename=result) }}">Download result</a></section>{% endif %}
+{% endblock %}

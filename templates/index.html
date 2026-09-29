@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}OpenCV Studio — Dashboard{% endblock %}
+{% block content %}
+<section class="hero"><p class="eyebrow">ONE FLASK APPLICATION</p><h1>Computer vision tools in one place.</h1><p>Use the navigation to process images, inspect video frames, or run the original live face and eye detection workflow.</p></section>
+<h2>All tools</h2>
+<div class="grid">
+  <a class="tile featured" href="{{ url_for('face_eye') }}"><span>01</span><h3>Face &amp; Eye Detection</h3><p>Upload a video and detect faces with eyes highlighted frame by frame.</p></a>
+  <a class="tile featured" href="{{ url_for('document_scanner.index') }}"><span>02</span><h3>Document Scanner</h3><p>Straighten, clean, and extract text from a photo, PDF, Word doc, or text file.</p></a>
+  {% for slug, label, description in tools %}<a class="tile" href="{{ url_for('tool', operation=slug) }}"><span>CV</span><h3>{{ label }}</h3><p>{{ description }}</p></a>{% endfor %}
+</div>
+{% endblock %}

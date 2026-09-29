@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Video Frames — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">VIDEO PROCESSING</p><h1>Video Frames</h1><p>Extract evenly spaced still frames from an uploaded video.</p></section>
+<form class="panel form" method="post" enctype="multipart/form-data"><label>Video file<input type="file" name="video" accept="video/*" required></label><label>Number of frames<input type="number" name="count" value="6" min="1" max="30"></label><button class="button" type="submit">Extract frames</button></form>
+{% if error %}<div class="alert">{{ error }}</div>{% endif %}
+{% if results %}<section class="grid frames">{% for result in results %}<div class="panel result"><img src="{{ url_for('output_file', filename=result) }}" alt="Extracted frame"><a class="button secondary" download href="{{ url_for('output_file', filename=result) }}">Download</a></div>{% endfor %}</section>{% endif %}
+{% endblock %}

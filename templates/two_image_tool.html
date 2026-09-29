@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}{{ operation|replace('-', ' ')|title }} — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">TWO-IMAGE PROCESSING</p><h1>{{ operation|replace('-', ' ')|title }}</h1><p>Upload the source image and a second image to compare, match, or blend them.</p></section>
+<form class="panel form" method="post" enctype="multipart/form-data"><label>First image<input type="file" name="image" accept="image/*" required></label><label>Second image{% if operation == 'template-matching' %} (template){% endif %}<input type="file" name="second_image" accept="image/*" required></label><button class="button" type="submit">Run operation</button></form>
+{% if error %}<div class="alert">{{ error }}</div>{% endif %}
+{% if result %}<section class="result panel"><h2>Result</h2><img src="{{ url_for('output_file', filename=result) }}" alt="Result"><a class="button secondary" download href="{{ url_for('output_file', filename=result) }}">Download result</a></section>{% endif %}
+{% endblock %}
