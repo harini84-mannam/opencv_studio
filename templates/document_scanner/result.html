@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Scan result — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">DOCUMENT SCANNER</p><h1>Scan complete</h1><p>Here's your enhanced document and the extracted text.</p></section>
+
+<section class="panel scan-result">
+  <div class="result-summary">
+    <div><span class="summary-label">Document type</span><strong>{{ doc_type|default('document')|title }}</strong></div>
+    {% if page_count %}<div><span class="summary-label">Pages</span><strong>{{ pages_rendered }} of {{ page_count }}</strong></div>{% endif %}
+    {% if used_fallback %}<div><span class="summary-label">Edge detection</span><strong>Fallback used</strong></div>{% endif %}
+  </div>
+
+  {% if page_previews %}
+  <div class="page-gallery">
+    {% for p in page_previews %}
+    <figure class="page-figure">
+      <img class="page-thumb" src="{{ url_for('document_scanner.uploaded_file', filename=p.enhanced) }}" alt="Enhanced page {{ loop.index }}">
+      <figcaption>Page {{ loop.index }}</figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <h2>Extracted summary</h2>
+  <pre class="text-block">{{ extracted_text }}</pre>
+
+  <div class="actions">
+    <a class="button" download href="{{ url_for('document_scanner.download_pdf', filename=pdf_filename) }}">Download PDF</a>
+    <a class="button secondary" href="{{ url_for('document_scanner.index') }}">Scan another</a>
+  </div>
+</section>
+{% endblock %}

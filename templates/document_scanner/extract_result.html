@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Full text extracted — OpenCV Studio{% endblock %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">DOCUMENT SCANNER</p><h1>Full text extracted</h1><p>Every word, every page — verbatim from {{ original_filename }}.</p></section>
+
+<section class="panel scan-result">
+  <div class="result-summary">
+    {% if page_count %}<div><span class="summary-label">Pages</span><strong>{{ page_count }}</strong></div>{% endif %}
+  </div>
+
+  <pre class="text-block text-block-large">{{ extracted_text }}</pre>
+
+  <div class="actions">
+    <a class="button" download href="{{ url_for('document_scanner.download_pdf', filename=txt_filename) }}">Download .txt</a>
+    <a class="button secondary" href="{{ url_for('document_scanner.index') }}">Scan another</a>
+  </div>
+</section>
+{% endblock %}
